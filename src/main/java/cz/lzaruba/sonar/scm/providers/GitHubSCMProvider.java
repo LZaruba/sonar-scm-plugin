@@ -63,9 +63,9 @@ public class GitHubSCMProvider implements SCMProvider {
             String inputLine;
             StringBuffer content = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
-                if ("\\ No newline at end of file".equals(inputLine)) {
-                    continue;
-                }
+//                if ("\\ No newline at end of file".equals(inputLine)) {
+//                    continue;
+//                }
                 content.append(inputLine).append("\n");
             }
             in.close();
