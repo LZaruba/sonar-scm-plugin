@@ -3,10 +3,9 @@ package cz.lzaruba.sonar.scm.providers;
 import cz.lzaruba.sonar.scm.model.Analysis;
 import cz.lzaruba.sonar.scm.utils.PropertyUtils;
 
-import java.util.Map;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import java.util.Map;
 
 public class BitbucketSCMProvider implements SCMProvider {
 
@@ -27,7 +26,7 @@ public class BitbucketSCMProvider implements SCMProvider {
             propertyUtils.p(properties, "projectKey"),
             propertyUtils.p(properties, "repositorySlug"),
             propertyUtils.p(properties, "pullRequestId"));
-        client.target(url).
+        //client.target(url)
         return null;
     }
 
