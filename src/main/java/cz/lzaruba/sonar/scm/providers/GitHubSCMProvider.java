@@ -54,7 +54,7 @@ public class GitHubSCMProvider implements SCMProvider {
             URL url = new URL(path);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encode(auth.getBytes()));
+            con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(auth.getBytes()));
             con.setRequestProperty("Accept", "application/vnd.github.v3.diff");
             con.setConnectTimeout(5000);
             con.setReadTimeout(5000);

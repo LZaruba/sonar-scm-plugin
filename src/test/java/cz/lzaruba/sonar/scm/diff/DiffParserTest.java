@@ -15,15 +15,59 @@
  */
 package cz.lzaruba.sonar.scm.diff;
 
+import com.github.difflib.unifieddiff.UnifiedDiff;
+import com.github.difflib.unifieddiff.UnifiedDiffReader;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
+import cz.lzaruba.sonar.scm.diff.model.File;
+import cz.lzaruba.sonar.scm.diff.model.Hunk;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.lang.model.type.ArrayType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@lundegaard.eu, 2021
  */
 class DiffParserTest {
 
-    public Diff parseDiff(String input) {
+    @Test
+    void simple() throws IOException, URISyntaxException {
+        Diff result = new DiffParser().parseDiff(getResource("new"));
 
+        assertThat(result).isEqualTo(new Diff().setFiles(Arrays.asList(
+            new File()
+                .setFromFile("src://user-account-service-application/src/integration-test/groovy/com/klarna/useraccount/service/flow/RegressionTest.groovy")
+                .setToFile("dst://user-account-service-application/src/integration-test/groovy/com/klarna/useraccount/service/flow/RegressionTest.groovy")
+                .setHunks(Arrays.asList(
+                    new Hunk()
+                        .setFromLineStart(200)
+                        .setFromNumLines(21)
+                        .setToLineStart(200)
+                        .setToNumLines(21))))));
+    }
+
+    @Test
+    void simple2() throws IOException, URISyntaxException {
+        UnifiedDiff simple = UnifiedDiffReader.parseUnifiedDiff(new ByteArrayInputStream(getResource("new").getBytes(StandardCharsets.UTF_8)));
+
+        System.out.println(simple);
+    }
+
+    private String getResource(String name) throws URISyntaxException, IOException {
+        URL url = getClass().getClassLoader().getResource("diff/" + name + ".diff");
+        return new String(Files.readAllBytes(Paths.get(url.toURI())), StandardCharsets.UTF_8);
     }
 
 }
