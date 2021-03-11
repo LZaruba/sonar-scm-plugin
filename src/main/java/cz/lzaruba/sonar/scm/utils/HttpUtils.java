@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.diff;
+package cz.lzaruba.sonar.scm.utils;
 
-import cz.lzaruba.sonar.scm.diff.model.Diff;
+import java.util.Map;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public interface DiffParser {
+public interface HttpUtils {
 
-    Diff parseDiff(String input);
+    String HEADER_ACCEPT = "Accept";
+    String HEADER_AUTHORIZATION = "Authorization";
+
+    String httpGet(String urlPattern, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys);
+    String getBasicAuthHeader(String usernameKey, String passwordKey, Map<String, String> properties);
 
 }

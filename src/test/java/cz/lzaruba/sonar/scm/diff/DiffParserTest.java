@@ -17,10 +17,10 @@ package cz.lzaruba.sonar.scm.diff;
 
 import com.github.difflib.unifieddiff.UnifiedDiff;
 import com.github.difflib.unifieddiff.UnifiedDiffReader;
+import cz.lzaruba.sonar.scm.diff.impl.DiffParserImpl;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
 import cz.lzaruba.sonar.scm.diff.model.File;
 import cz.lzaruba.sonar.scm.diff.model.Hunk;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -31,9 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
-
-import javax.lang.model.type.ArrayType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,7 +41,7 @@ class DiffParserTest {
 
     @Test
     void simple() throws IOException, URISyntaxException {
-        Diff result = new DiffParser().parseDiff(getResource("new"));
+        Diff result = new DiffParserImpl().parseDiff(getResource("new"));
 
         assertThat(result).isEqualTo(new Diff().setFiles(Arrays.asList(
             new File()
@@ -61,8 +58,6 @@ class DiffParserTest {
     @Test
     void simple2() throws IOException, URISyntaxException {
         UnifiedDiff simple = UnifiedDiffReader.parseUnifiedDiff(new ByteArrayInputStream(getResource("new").getBytes(StandardCharsets.UTF_8)));
-
-        System.out.println(simple);
     }
 
     private String getResource(String name) throws URISyntaxException, IOException {

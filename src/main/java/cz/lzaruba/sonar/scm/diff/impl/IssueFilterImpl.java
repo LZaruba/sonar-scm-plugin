@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.diff;
+package cz.lzaruba.sonar.scm.diff.impl;
 
+import cz.lzaruba.sonar.scm.diff.IssueFilter;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
+import cz.lzaruba.sonar.scm.model.Issue;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public interface DiffParser {
+public class IssueFilterImpl implements IssueFilter {
 
-    Diff parseDiff(String input);
+    @Override
+    public boolean isPresent(Issue issue, Diff diff) {
+        return true;
+    }
 
 }

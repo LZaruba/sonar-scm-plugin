@@ -16,12 +16,13 @@
 package cz.lzaruba.sonar.scm.diff;
 
 import cz.lzaruba.sonar.scm.diff.model.Diff;
+import cz.lzaruba.sonar.scm.model.Issue;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public interface DiffParser {
+public interface IssueFilter {
 
-    Diff parseDiff(String input);
+    boolean isPresent(Issue issue, Diff diff);
 
 }

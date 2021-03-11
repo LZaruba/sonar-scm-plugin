@@ -15,17 +15,20 @@
  */
 package cz.lzaruba.sonar.scm;
 
-import com.github.difflib.unifieddiff.UnifiedDiff;
-import com.github.difflib.unifieddiff.UnifiedDiffReader;
+import cz.lzaruba.sonar.scm.diff.DiffParser;
+import cz.lzaruba.sonar.scm.diff.IssueFilter;
+import cz.lzaruba.sonar.scm.diff.impl.DiffParserImpl;
+import cz.lzaruba.sonar.scm.diff.impl.IssueFilterImpl;
+import cz.lzaruba.sonar.scm.diff.model.Diff;
 import cz.lzaruba.sonar.scm.model.Analysis;
+import cz.lzaruba.sonar.scm.providers.SCMProvider;
 import cz.lzaruba.sonar.scm.providers.SCMProviderFactory;
+import cz.lzaruba.sonar.scm.providers.impl.SCMProviderFactoryImpl;
+import cz.lzaruba.sonar.scm.utils.PropertyUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
@@ -33,21 +36,25 @@ import java.util.List;
 public class AnalysisProcessor {
 
     private static final Logger LOG = Loggers.get(AnalysisProcessor.class);
-    private static final SCMProviderFactory PROVIDER_FACTORY = new SCMProviderFactory();
+
+    private final DiffParser diffParser = new DiffParserImpl();
+    private final IssueFilter issueFilter = new IssueFilterImpl();
+    private final PropertyUtils propertyUtils = new PropertyUtils();
+    private final SCMProviderFactory providerFactory = new SCMProviderFactoryImpl();
 
     public void process(Analysis analysis) {
-        LOG.info(analysis.toString());
-        String diff = PROVIDER_FACTORY.getProvider("github").getDiff(analysis.getProperties());
-        ByteArrayInputStream is = new ByteArrayInputStream(diff.getBytes(StandardCharsets.UTF_8));
-        try {
-            UnifiedDiff d = UnifiedDiffReader.parseUnifiedDiff(is);
-            d.getFiles().forEach(f -> f.getPatch().getDeltas().forEach(delta -> {
-                List<Integer> positions = delta.getTarget().getChangePosition();
-                LOG.info(f.getToFile() + ": " + positions);
-            }));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SCMProvider scmProvider = providerFactory.getProvider(propertyUtils.p(analysis.getProperties(), "scm"));
+        String diffInput = scmProvider.getDiff(analysis.getProperties());
+        Diff diff = diffParser.parseDiff(diffInput);
+        scmProvider.writeAnalysis(filterAnalysis(analysis, diff));
+    }
+
+    private Analysis filterAnalysis(Analysis analysis, Diff diff) {
+        return new Analysis(
+            analysis.getIssues().stream()
+                .filter(i -> issueFilter.isPresent(i, diff))
+                .collect(toList()),
+            analysis.getProperties());
     }
 
 }

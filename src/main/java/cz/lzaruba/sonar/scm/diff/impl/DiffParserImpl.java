@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.diff;
+package cz.lzaruba.sonar.scm.diff.impl;
 
+import cz.lzaruba.sonar.scm.diff.DiffParser;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public interface DiffParser {
+public class DiffParserImpl implements DiffParser {
 
-    Diff parseDiff(String input);
+    @Override
+    public Diff parseDiff(String input) {
+        return null;
+    }
 
 }
