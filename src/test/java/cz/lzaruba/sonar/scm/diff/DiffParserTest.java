@@ -15,8 +15,6 @@
  */
 package cz.lzaruba.sonar.scm.diff;
 
-import com.github.difflib.unifieddiff.UnifiedDiff;
-import com.github.difflib.unifieddiff.UnifiedDiffReader;
 import cz.lzaruba.sonar.scm.diff.impl.DiffParserImpl;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
 import cz.lzaruba.sonar.scm.diff.model.File;
@@ -53,11 +51,6 @@ class DiffParserTest {
                         .setFromNumLines(21)
                         .setToLineStart(200)
                         .setToNumLines(21))))));
-    }
-
-//    @Test
-    void simple2() throws IOException, URISyntaxException {
-        UnifiedDiff simple = UnifiedDiffReader.parseUnifiedDiff(new ByteArrayInputStream(getResource("new").getBytes(StandardCharsets.UTF_8)));
     }
 
     private String getResource(String name) throws URISyntaxException, IOException {
