@@ -23,7 +23,7 @@ run sonarqube locally:
 $ docker-compose up
 ```
 
-Then visit: http://localhost:9000 (admin / admin)
+Then visit: [http://localhost:9000](http://localhost:9000) (admin / admin)
 
 
 ## Contributing
