@@ -4,7 +4,6 @@ REPO_NAME ?= $(notdir $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..))/$(notdi
 
 .PHONY: all
 all:
-	echo $(REPO_NAME)
 
 
 .PHONY: build
