@@ -8,4 +8,4 @@ RUN mvn verify
 FROM sonarqube:8-community
 
 COPY --from=MAVEN_TOOL_CHAIN /tmp/target/sonar-scm-plugin-0.1.0-SNAPSHOT.jar /opt/sonarqube/extensions/plugins/
-COPY src/test/resources/docker/sonar.properties /opt/sonarqube/conf/
+COPY sonar.properties /opt/sonarqube/conf/
