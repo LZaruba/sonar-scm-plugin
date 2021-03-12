@@ -15,12 +15,14 @@
  */
 package cz.lzaruba.sonar.scm.utils.impl;
 
+import com.google.gson.Gson;
 import cz.lzaruba.sonar.scm.utils.HttpUtils;
 import cz.lzaruba.sonar.scm.utils.PropertyUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +41,10 @@ public class HttpUtilsImpl implements HttpUtils {
 
     @Override
     public String httpGet(String urlPattern, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys) {
+        return http("GET", null, urlPattern, headers, properties, urlVariableKeys);
+    }
+
+    private String http(String method, String body, String urlPattern, Map<String, String> headers, Map<String, String> properties, String[] urlVariableKeys) {
         String[] urlVariables = Stream.of(urlVariableKeys)
                 .map(key -> propertyUtils.p(properties, key))
                 .toArray(String[]::new);
@@ -48,12 +54,19 @@ public class HttpUtilsImpl implements HttpUtils {
         try {
             URL url = new URL(path);
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(method);
             for (Map.Entry<String, String> e : headers.entrySet()) {
                 con.setRequestProperty(e.getKey(), e.getValue());
             }
+
             con.setConnectTimeout(TIMEOUT);
             con.setReadTimeout(TIMEOUT);
+            if (body != null) {
+                con.setDoOutput(true);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8);
+                writer.write(body);
+                writer.flush();
+            }
             con.getResponseCode();
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
@@ -75,9 +88,29 @@ public class HttpUtilsImpl implements HttpUtils {
     }
 
     @Override
+    public String httpPost(String urlPattern, String body, Map<String, String> headers, Map<String, String> properties, String... urlVariableKeys) {
+        return http("POST", body, urlPattern, headers, properties, urlVariableKeys);
+    }
+
+    @Override
+    public String httpPut(String urlPattern, String body, Map<String, String> headers, Map<String, String> properties, String... urlVariableKeys) {
+        return http("PUT", body, urlPattern, headers, properties, urlVariableKeys);
+    }
+
+    @Override
+    public String httpDelete(String urlPattern, Map<String, String> headers, Map<String, String> properties, String... urlVariableKeys) {
+        return http("DELETE", null, urlPattern, headers, properties, urlVariableKeys);
+    }
+
+    @Override
     public String getBasicAuthHeader(String usernameKey, String passwordKey, Map<String, String> properties) {
         String auth = propertyUtils.p(properties, usernameKey) + ":" + propertyUtils.p(properties, passwordKey);
         return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
+    }
+
+    @Override
+    public String getBody(Object body) {
+        return new Gson().toJson(body);
     }
 
 }

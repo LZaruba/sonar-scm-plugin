@@ -21,15 +21,26 @@ import cz.lzaruba.sonar.scm.utils.HttpUtils;
 import cz.lzaruba.sonar.scm.utils.impl.HttpUtilsImpl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Implementation for the Bitbucket Server / Stash
+ *
+ * See the REST API documentation here {https://docs.atlassian.com/bitbucket-server/rest/7.11.1/bitbucket-code-insights-rest.html}
+ * and here {https://docs.atlassian.com/bitbucket-server/rest/7.11.1/bitbucket-rest.html}
+ *
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 public class BitbucketServerSCMProvider implements SCMProvider {
 
     private static final String DIFF_URL = "%s/rest/api/1.0/projects/%s/repos/%s/pull-requests/%s.diff";
-    private static final String REPORT_URL = "%s/rest/insights/1.0/projects/%s/repos/%s/commits/%s/reports/%s";
+    private static final String REPORT_URL = "%s/rest/insights/1.0/projects/%s/repos/%s/commits/%s/reports/sonar-report";
+    private static final String ANNOTATIONS_URL = REPORT_URL + "/annotations";
+    private static final String[] URL_PROPERTY_KEYS = {"host",
+        "projectKey",
+        "repositorySlug",
+        "commitId"};
 
     private final HttpUtils httpUtils = new HttpUtilsImpl();
 
@@ -41,89 +52,64 @@ public class BitbucketServerSCMProvider implements SCMProvider {
     @Override
     public String getDiff(Map<String, String> properties) {
         return httpUtils.httpGet(DIFF_URL,
-                Collections.singletonMap(HttpUtils.HEADER_AUTHORIZATION,
-                    httpUtils.getBasicAuthHeader("username", "token", properties)),
-                properties,
-                "host",
-                "projectKey",
-                "repositorySlug",
-                "pullRequestId");
+            getHeaders(properties, null),
+            properties,
+            "host",
+            "projectKey",
+            "repositorySlug",
+            "pullRequestId");
+    }
+
+    private Map<String, String> getHeaders(Map<String, String> properties, String contentType) {
+        HashMap<String, String> headers = new HashMap<>(Collections.singletonMap(HttpUtils.HEADER_AUTHORIZATION,
+            httpUtils.getBasicAuthHeader("username", "token", properties)));
+        if (contentType != null) {
+            headers.put(HttpUtils.HEADER_CONTENT_TYPE, contentType);
+        }
+        return headers;
     }
 
     @Override
     public void writeAnalysis(Analysis analysis) {
-
+        deletePreviousReport(analysis);
+        createReport(analysis);
     }
 
-}
+    private void createReport(Analysis analysis) {
+        httpUtils.httpPut(REPORT_URL,
+            httpUtils.getBody(getReportBody(analysis)),
+            getHeaders(analysis.getProperties(), HttpUtils.CONTENT_TYPE_APPLICATION_JSON),
+            analysis.getProperties(),
+            URL_PROPERTY_KEYS);
 
-/*
-Create a report
-Content-Type: application/json
-
-{
-    "title": "Lukas Test Report",
-    "details": "This pull request introduces XX new dependency vulnerabilities.",
-    "reporter": "mySystem",
-    "link": "http://www.mysystem.com/reports/001",
-    "result": "FAIL",
-    "data": [
-        {
-            "title": "Test Code Coverage",
-            "type": "PERCENTAGE",
-            "value": 60.3
-        },
-        {
-            "title": "Safe to merge?",
-            "type": "BOOLEAN",
-            "value": false
+        Annotations annotations = getAnnotationsBody(analysis);
+        if (annotations.getAnnotations().isEmpty()) {
+            return;
         }
-    ]
-}
- */
 
-/*
-Add annotations
-Content-Type: application/json
-
-{
-  "annotations": [
-    {
-      "message": "global annotation",
-      "severity": "LOW",
-      "link": "http://someurl"
-    },
-    {
-      "path": ".../.../..../.../xxx.java",
-      "message": "file annotation",
-      "severity": "MEDIUM",
-      "link": "http://someurl",
-      "type": "VULNERABILITY"
-    },
-    {
-      "path": ".../.../..../.../xxx.java",
-      "line": 8,
-      "message": "line annotation",
-      "severity": "HIGH",
-      "link": "http://someurl",
-      "type": "CODE_SMELL"
-    },
-    {
-      "path": ".../.../..../.../xxx.java",
-      "line": 11,
-      "message": "line annotation",
-      "severity": "HIGH",
-      "link": "http://someurl",
-      "type": "BUG"
-    },
-    {
-      "path": ".../.../..../.../xxx.java",
-      "line": 23,
-      "message": "line annotation",
-      "severity": "HIGH",
-      "link": "http://someurl",
-      "type": "BUG"
+        httpUtils.httpPost(ANNOTATIONS_URL,
+            httpUtils.getBody(annotations),
+            getHeaders(analysis.getProperties(), HttpUtils.CONTENT_TYPE_APPLICATION_JSON),
+            analysis.getProperties(),
+            URL_PROPERTY_KEYS);
     }
-  ]
+
+    private Annotations getAnnotationsBody(Analysis analysis) {
+        return new Annotations();
+    }
+
+    private ReportRequest getReportBody(Analysis analysis) {
+        return new ReportRequest()
+            .setTitle("SonarQube Analysis")
+            .setResult(ReportRequest.Result.PASS)
+            .setReporter("Sonar SCM Plugin");
+    }
+
+    private void deletePreviousReport(Analysis analysis) {
+        httpUtils.httpDelete(REPORT_URL,
+            getHeaders(analysis.getProperties(), null),
+            analysis.getProperties(),
+            URL_PROPERTY_KEYS);
+    }
+
 }
- */

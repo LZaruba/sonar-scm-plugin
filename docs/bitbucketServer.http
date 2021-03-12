@@ -1,0 +1,77 @@
+GET {{host}}/rest/api/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/pull-requests/{{pullRequestId}}.diff
+Authorization: Basic {{username}} {{token}}
+
+###
+PUT {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1
+Authorization: Basic {{username}} {{token}}
+Content-Type: application/json
+
+{
+  "title": "Test Report 1",
+  "details": "This pull request introduces XX new dependency vulnerabilities.",
+  "reporter": "mySystem",
+  "link": "http://www.mysystem.com/reports/001",
+  "result": "FAIL",
+  "data": [
+    {
+      "title": "Test Code Coverage",
+      "type": "PERCENTAGE",
+      "value": 60.3
+    },
+    {
+      "title": "Safe to merge?",
+      "type": "BOOLEAN",
+      "value": false
+    }
+  ]
+}
+
+###
+POST {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1/annotations
+Authorization: Basic {{username}} {{token}}
+Content-Type: application/json
+
+{
+  "annotations": [
+    {
+      "message": "global annotation",
+      "severity": "LOW",
+      "link": "http://someurl"
+    },
+    {
+      "path": "{{testFileName}}",
+      "message": "file annotation",
+      "severity": "MEDIUM",
+      "link": "http://someurl",
+      "type": "VULNERABILITY"
+    },
+    {
+      "path": "{{testFileName}}",
+      "line": 8,
+      "message": "line annotation",
+      "severity": "HIGH",
+      "link": "http://someurl",
+      "type": "CODE_SMELL"
+    },
+    {
+      "path": "{{testFileName}}",
+      "line": 11,
+      "message": "line annotation",
+      "severity": "HIGH",
+      "link": "http://someurl",
+      "type": "BUG"
+    },
+    {
+      "path": "{{testFileName}}",
+      "line": 23,
+      "message": "line annotation",
+      "severity": "HIGH",
+      "link": "http://someurl",
+      "type": "BUG"
+    }
+  ]
+}
+
+###
+DELETE {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1
+Authorization: Basic {{username}} {{token}}

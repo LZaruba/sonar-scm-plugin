@@ -15,6 +15,8 @@
  */
 package cz.lzaruba.sonar.scm.utils;
 
+import cz.lzaruba.sonar.scm.providers.impl.ReportRequest;
+
 import java.util.Map;
 
 /**
@@ -24,8 +26,15 @@ public interface HttpUtils {
 
     String HEADER_ACCEPT = "Accept";
     String HEADER_AUTHORIZATION = "Authorization";
+    String HEADER_CONTENT_TYPE = "Content-Type";
+
+    String CONTENT_TYPE_APPLICATION_JSON = "application/json";
 
     String httpGet(String urlPattern, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys);
-    String getBasicAuthHeader(String usernameKey, String passwordKey, Map<String, String> properties);
+    String httpPost(String urlPattern, String body, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys);
+    String httpPut(String urlPattern, String body, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys);
+    String httpDelete(String urlPattern, Map<String, String> headers, Map<String, String> properties, String ... urlVariableKeys);
 
+    String getBasicAuthHeader(String usernameKey, String passwordKey, Map<String, String> properties);
+    String getBody(Object body);
 }
