@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  sonarqube:
+    build: .
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./sonarqube/data:/opt/sonarqube/data

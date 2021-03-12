@@ -9,3 +9,8 @@ all:
 .PHONY: build
 build:
 	docker build -t $(REPO_NAME)  .
+
+
+.PHONY: run
+run:
+	docker-compose up
