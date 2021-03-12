@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/LZaruba/sonar-scm-plugin.svg?style=shield)](<https://app.circleci.com/pipelines/github/LZaruba/sonar-scm-plugin>)
 # sonar-scm-plugin
 
 ## Usage
