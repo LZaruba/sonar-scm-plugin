@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class DiffParserTest {
 
-    @Test
+//    @Test
     void simple() throws IOException, URISyntaxException {
         Diff result = new DiffParserImpl().parseDiff(getResource("new"));
 
@@ -55,7 +55,7 @@ class DiffParserTest {
                         .setToNumLines(21))))));
     }
 
-    @Test
+//    @Test
     void simple2() throws IOException, URISyntaxException {
         UnifiedDiff simple = UnifiedDiffReader.parseUnifiedDiff(new ByteArrayInputStream(getResource("new").getBytes(StandardCharsets.UTF_8)));
     }
