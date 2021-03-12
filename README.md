@@ -11,9 +11,19 @@ $ mvn sonar:sonar -Dsonar.projectKey=test -Dsonar.host.url=http://localhost:9000
 
 ### Docker
 
+build docker image:
+
 ```bash
 $ make build
 ```
+
+run sonarqube locally:
+
+```bash
+$ docker-compose up
+```
+
+Then visit: [http://localhost:9000](http://localhost:9000) (admin / admin)
 
 
 ## Contributing
