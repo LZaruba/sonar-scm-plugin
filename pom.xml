@@ -17,6 +17,7 @@
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.apiVersion>8.3.1.34397</sonar.apiVersion>
         <bitbucket.version>7.9.1</bitbucket.version>
+        <jacoco.version>0.8.6</jacoco.version>
     </properties>
 
     <dependencies>
@@ -82,6 +83,26 @@
                     <target>${jdk.min.version}</target>
                     <source>${jdk.min.version}</source>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- attached to Maven test phase -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
