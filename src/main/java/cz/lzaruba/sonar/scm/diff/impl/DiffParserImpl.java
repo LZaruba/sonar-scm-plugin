@@ -15,17 +15,32 @@
  */
 package cz.lzaruba.sonar.scm.diff.impl;
 
+import com.github.stkent.githubdiffparser.GitHubDiffParser;
+import cz.lzaruba.sonar.scm.diff.mappers.FileMapper;
 import cz.lzaruba.sonar.scm.diff.DiffParser;
+import cz.lzaruba.sonar.scm.diff.mappers.impl.FileMapperImpl;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
+
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 public class DiffParserImpl implements DiffParser {
 
+    private final FileMapper fileMapper = new FileMapperImpl();
+    private final GitHubDiffParser gitHubDiffParser = new GitHubDiffParser();
+
     @Override
     public Diff parseDiff(String input) {
-        return null;
+        return new Diff(
+            gitHubDiffParser
+                .parse(input.getBytes(StandardCharsets.UTF_8))
+                .stream()
+                .map(fileMapper::diffToFile)
+                .collect(Collectors.toList())
+        );
     }
 
 }
