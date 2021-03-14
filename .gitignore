@@ -1,3 +1,7 @@
+.DS_Store
+/.idea/
+/*.iml
+
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -10,5 +14,5 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-.idea/
-*.iml
+# docker-compose
+/sonarqube/
