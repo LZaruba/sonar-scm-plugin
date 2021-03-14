@@ -15,8 +15,6 @@
  */
 package cz.lzaruba.sonar.scm.utils;
 
-import cz.lzaruba.sonar.scm.providers.impl.ReportRequest;
-
 import java.util.Map;
 
 /**

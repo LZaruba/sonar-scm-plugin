@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.providers.impl;
+package cz.lzaruba.sonar.scm.providers.stash;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 @Data
+@AllArgsConstructor
 public class ReportRequestData {
 
     public enum ReportRequestDataType {

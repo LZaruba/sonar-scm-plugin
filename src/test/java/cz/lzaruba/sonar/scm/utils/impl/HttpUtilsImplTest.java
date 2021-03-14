@@ -15,12 +15,10 @@
  */
 package cz.lzaruba.sonar.scm.utils.impl;
 
-import cz.lzaruba.sonar.scm.providers.impl.ReportRequest;
-import org.assertj.core.api.Assertions;
+import cz.lzaruba.sonar.scm.providers.stash.ReportRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021

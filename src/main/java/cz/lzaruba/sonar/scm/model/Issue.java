@@ -15,23 +15,51 @@
  */
 package cz.lzaruba.sonar.scm.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-@Getter
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class Issue {
 
-    private final String key;
-    private final String ruleKey;
-    private final String severity;
-    private final String type;
-    private final String message;
+    public enum Type {
+        CODE_SMELL, VULNERABILITY, BUG, SECURITY_HOTSPOT
+    }
 
-    private final String component;
-    private final Integer line;
+    public enum Severity {
+        INFO, MINOR, MAJOR, CRITICAL, BLOCKER;
+
+        public static List<Severity> getThresholdOrAbove(Severity threshold) {
+            List<Severity> result = new ArrayList<>();
+            boolean thresholdReached = false;
+            for (Severity s : Severity.values()) {
+                if (thresholdReached) {
+                    result.add(s);
+                    continue;
+                }
+                if (s == threshold) {
+                    thresholdReached = true;
+                    result.add(s);
+                }
+            }
+
+            return result;
+        }
+    }
+
+    private String key;
+    private String ruleKey;
+    private Severity severity;
+    private Type type;
+    private String message;
+
+    private String component;
+    private Integer line;
 
 }

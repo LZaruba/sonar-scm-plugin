@@ -2,7 +2,7 @@ GET {{host}}/rest/api/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/pull-
 Authorization: Basic {{username}} {{token}}
 
 ###
-PUT {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1
+PUT {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/sonar-report
 Authorization: Basic {{username}} {{token}}
 Content-Type: application/json
 
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ###
-POST {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1/annotations
+POST {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/sonar-report/annotations
 Authorization: Basic {{username}} {{token}}
 Content-Type: application/json
 
@@ -73,5 +73,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/report-key-1
+DELETE {{host}}/rest/insights/1.0/projects/{{projectKey}}/repos/{{repositorySlug}}/commits/{{commitId}}/reports/sonar-report
 Authorization: Basic {{username}} {{token}}

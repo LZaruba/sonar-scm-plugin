@@ -15,8 +15,7 @@
  */
 package cz.lzaruba.sonar.scm.providers;
 
-import cz.lzaruba.sonar.scm.providers.impl.BitbucketServerSCMProvider;
-import org.junit.jupiter.api.Test;
+import cz.lzaruba.sonar.scm.providers.stash.BitbucketServerSCMProvider;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

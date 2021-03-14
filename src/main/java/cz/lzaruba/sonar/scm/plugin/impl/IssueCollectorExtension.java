@@ -54,7 +54,8 @@ public class IssueCollectorExtension implements MeasureComputer {
     }
 
     private Issue convertIssue(org.sonar.api.ce.measure.Issue issue, String component) {
-        return new Issue(issue.key(), issue.ruleKey().toString(), issue.severity(), issue.type().name(),
+        return new Issue(issue.key(), issue.ruleKey().toString(), Issue.Severity.valueOf(issue.severity()),
+                Issue.Type.valueOf(issue.type().name()),
                 reflectGetValue(issue, "message", NOT_AVAILABLE), component,
                 reflectGetValue(issue, "line", null));
     }

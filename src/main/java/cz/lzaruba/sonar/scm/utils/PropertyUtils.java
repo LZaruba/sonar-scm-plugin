@@ -16,6 +16,7 @@
 package cz.lzaruba.sonar.scm.utils;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
@@ -28,6 +29,18 @@ public class PropertyUtils {
         String value = properties.get(PROPERTY_PREFIX + key);
         if (value == null) {
             throw new IllegalStateException(String.format("Missing property '%s'", PROPERTY_PREFIX + key));
+        }
+        return value;
+    }
+
+    public Optional<String> pOptional(Map<String, String> properties, String key) {
+        return Optional.ofNullable(properties.get(PROPERTY_PREFIX + key));
+    }
+
+    public String p(Map<String, String> properties, String key, String defaultValue) {
+        String value = properties.get(PROPERTY_PREFIX + key);
+        if (value == null) {
+            return defaultValue;
         }
         return value;
     }

@@ -16,7 +16,7 @@
 package cz.lzaruba.sonar.scm.plugin.impl;
 
 import cz.lzaruba.sonar.scm.AnalysisProcessor;
-import cz.lzaruba.sonar.scm.model.Analysis;
+import cz.lzaruba.sonar.scm.impl.AnalysisProcessorImpl;
 import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
 
 /**
@@ -24,15 +24,15 @@ import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
  */
 public class PostProjectAnalysisExtension implements PostProjectAnalysisTask {
 
+    private final AnalysisProcessor analysisProcessor = new AnalysisProcessorImpl();
+
     @Override
     public void finished(Context context) {
         ProjectAnalysis projectAnalysis = context.getProjectAnalysis();
         IssuesHolder holder = IssueCollectorExtension.ISSUES_CACHE.get();
-        new AnalysisProcessor().process(convert(holder, projectAnalysis));
-    }
-
-    private Analysis convert(IssuesHolder holder, ProjectAnalysis projectAnalysis) {
-        return new Analysis(holder.getIssues(), projectAnalysis.getScannerContext().getProperties());
+        IssueCollectorExtension.ISSUES_CACHE.remove();
+        analysisProcessor.process(context.getProjectAnalysis().getProject().getKey(),
+            holder.getIssues(), projectAnalysis.getScannerContext().getProperties());
     }
 
     @Override

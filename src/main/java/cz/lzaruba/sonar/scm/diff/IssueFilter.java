@@ -15,14 +15,13 @@
  */
 package cz.lzaruba.sonar.scm.diff;
 
-import cz.lzaruba.sonar.scm.diff.model.Diff;
 import cz.lzaruba.sonar.scm.model.Issue;
+
+import java.util.function.Predicate;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public interface IssueFilter {
-
-    boolean isPresent(Issue issue, Diff diff);
+public interface IssueFilter extends Predicate<Issue> {
 
 }

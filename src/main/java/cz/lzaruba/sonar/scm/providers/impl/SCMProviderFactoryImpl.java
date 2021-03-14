@@ -17,6 +17,7 @@ package cz.lzaruba.sonar.scm.providers.impl;
 
 import cz.lzaruba.sonar.scm.providers.SCMProvider;
 import cz.lzaruba.sonar.scm.providers.SCMProviderFactory;
+import cz.lzaruba.sonar.scm.providers.stash.BitbucketServerSCMProvider;
 
 import java.util.Arrays;
 import java.util.List;

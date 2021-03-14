@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.providers.impl;
+package cz.lzaruba.sonar.scm.providers.stash;
 
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 @Data
-public class Annotation {
+public class ReportRequest {
 
-    public enum Type {
-        VULNERABILITY, CODE_SMELL, BUG
+    public enum Result {
+        PASS, FAIL
     }
 
-    public enum Severity {
-        LOW, MEDIUM, HIGH
-    }
-
-    private String path;
-    private Integer line;
-    private String message;
-    private Severity severity;
-    private String link;
-    private Type type;
+    private String title;
+    private String details;
+    private String reporter;
+    private Result result;
+    private List<ReportRequestData> data;
 
 }

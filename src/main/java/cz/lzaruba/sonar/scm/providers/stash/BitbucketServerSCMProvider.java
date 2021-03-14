@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.providers.impl;
+package cz.lzaruba.sonar.scm.providers.stash;
 
 import cz.lzaruba.sonar.scm.model.Analysis;
+import cz.lzaruba.sonar.scm.model.Issue;
 import cz.lzaruba.sonar.scm.providers.SCMProvider;
 import cz.lzaruba.sonar.scm.utils.HttpUtils;
 import cz.lzaruba.sonar.scm.utils.impl.HttpUtilsImpl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation for the Bitbucket Server / Stash
@@ -95,14 +99,62 @@ public class BitbucketServerSCMProvider implements SCMProvider {
     }
 
     private Annotations getAnnotationsBody(Analysis analysis) {
-        return new Annotations();
+        return new Annotations().setAnnotations(analysis.getIssues().stream()
+            .map(this::getAnnotation).collect(toList()));
     }
+
+    private Annotation getAnnotation(Issue issue) {
+        return new Annotation()
+            .setType(mapType(issue.getType()))
+            .setPath(issue.getComponent())
+            .setSeverity(mapSeverity(issue.getSeverity()))
+            .setLine(issue.getLine())
+            .setMessage(issue.getMessage());
+    }
+
+    private Annotation.Severity mapSeverity(Issue.Severity severity) {
+        if (severity == Issue.Severity.BLOCKER || severity == Issue.Severity.CRITICAL) {
+            return Annotation.Severity.HIGH;
+        }
+
+        if (severity == Issue.Severity.MAJOR) {
+            return Annotation.Severity.MEDIUM;
+        }
+
+        return Annotation.Severity.LOW;
+    }
+
+    private Annotation.Type mapType(Issue.Type type) {
+        if (type == Issue.Type.VULNERABILITY || type == Issue.Type.SECURITY_HOTSPOT) {
+            return Annotation.Type.VULNERABILITY;
+        }
+
+        if (type == Issue.Type.CODE_SMELL) {
+            return Annotation.Type.CODE_SMELL;
+        }
+
+        return Annotation.Type.BUG;
+    }
+
+
 
     private ReportRequest getReportBody(Analysis analysis) {
         return new ReportRequest()
             .setTitle("SonarQube Analysis")
-            .setResult(ReportRequest.Result.PASS)
-            .setReporter("Sonar SCM Plugin");
+            .setResult(analysis.getResult() == Analysis.Result.PASSED ? ReportRequest.Result.PASS : ReportRequest.Result.FAIL)
+            .setReporter("Sonar SCM Plugin")
+            .setData(analysis.getIssuesSummary().entrySet().stream()
+                .sorted((e1, e2) -> -1 * Integer.compare(getSeverityIndex(e1.getKey()), getSeverityIndex(e2.getKey())))
+                .map(this::mapIssueSummary)
+                .collect(toList()));
+    }
+
+    private int getSeverityIndex(Issue.Severity severity) {
+        return Arrays.binarySearch(Issue.Severity.values(), severity);
+    }
+
+    private ReportRequestData mapIssueSummary(Map.Entry<Issue.Severity, Long> record) {
+        return new ReportRequestData(record.getKey().toString(), ReportRequestData.ReportRequestDataType.NUMBER, record.getValue());
     }
 
     private void deletePreviousReport(Analysis analysis) {

@@ -22,10 +22,16 @@ import cz.lzaruba.sonar.scm.model.Issue;
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
-public class IssueFilterImpl implements IssueFilter {
+public class DiffIssueFilterImpl implements IssueFilter {
+
+    private final Diff diff;
+
+    public DiffIssueFilterImpl(Diff diff) {
+        this.diff = diff;
+    }
 
     @Override
-    public boolean isPresent(Issue issue, Diff diff) {
+    public boolean test(Issue issue) {
         return true;
     }
 
