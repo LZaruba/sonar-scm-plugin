@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cz.lzaruba.sonar.scm.diff.model;
+package cz.lzaruba.sonar.scm.diff.mappers;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import cz.lzaruba.sonar.scm.diff.model.Hunk;
 
 /**
- * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
+ * @author Marcos Paulo Belasco de Almeida, marcos@marcosalmeida.dev, 2021
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class Diff {
+public interface HunkMapper {
 
-    private List<File> files;
-
+    Hunk libraryHunkToHunk(com.github.stkent.githubdiffparser.models.Hunk hunk);
 }
