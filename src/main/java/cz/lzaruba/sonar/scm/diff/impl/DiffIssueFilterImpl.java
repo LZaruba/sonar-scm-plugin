@@ -17,7 +17,13 @@ package cz.lzaruba.sonar.scm.diff.impl;
 
 import cz.lzaruba.sonar.scm.diff.IssueFilter;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
+import cz.lzaruba.sonar.scm.diff.model.File;
+import cz.lzaruba.sonar.scm.diff.model.Hunk;
 import cz.lzaruba.sonar.scm.model.Issue;
+
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
@@ -27,12 +33,37 @@ public class DiffIssueFilterImpl implements IssueFilter {
     private final Diff diff;
 
     public DiffIssueFilterImpl(Diff diff) {
+        if (diff == null) {
+            throw new IllegalArgumentException("Diff is required");
+        }
         this.diff = diff;
     }
 
     @Override
     public boolean test(Issue issue) {
-        return true;
+        return Optional.ofNullable(diff.getFiles()).orElse(emptyList())
+            .stream()
+            .anyMatch(f -> fileContainsIssue(f, issue));
+    }
+
+    private boolean fileContainsIssue(File file, Issue issue) {
+        if (file.getToFile() == null || !file.getToFile().equals(issue.getComponent())) {
+            return false;
+        }
+
+        if (issue.getLine() == null) { // issue is assigned to the whole file
+            return true;
+        }
+
+        return Optional.ofNullable(file.getHunks()).orElse(emptyList())
+            .stream()
+            .anyMatch(h -> hunkContainsLine(h, issue.getLine()));
+    }
+
+    private boolean hunkContainsLine(Hunk hunk, Integer line) {
+        int startLine = hunk.getFromLineStart();
+        int endLine = startLine + hunk.getToNumLines();
+        return line >= startLine && line <= endLine;
     }
 
 }

@@ -17,6 +17,7 @@ package cz.lzaruba.sonar.scm.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Issue {
 
