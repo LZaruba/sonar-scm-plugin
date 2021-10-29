@@ -66,7 +66,7 @@ public class HttpUtilsImpl implements HttpUtils {
                 return content.toString().trim();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error while loading data from " + path, e);
+            throw new RuntimeException("Error while load ing data from " + path, e);
         } finally {
             if (con != null) {
                 con.disconnect();
