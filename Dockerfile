@@ -5,10 +5,10 @@ WORKDIR /tmp
 
 COPY . .
 RUN mvn dependency:go-offline
-RUN mvn verify
+RUN mvn clean verify
 
 
-FROM sonarqube:8-community
+FROM sonarqube:9-community
 
 COPY --from=MAVEN_TOOL_CHAIN /tmp/target/*.jar /opt/sonarqube/extensions/plugins/
 COPY sonar.properties /opt/sonarqube/conf/
