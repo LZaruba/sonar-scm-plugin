@@ -46,7 +46,7 @@ class IssueFilterImplTest {
     @Test
     void emptyDiff() {
         assertThat(new IssueFilterImpl().isPresent(getIssue(), new Diff()))
-                .isFalse();
+                .isTrue();
     }
 
     @Test
