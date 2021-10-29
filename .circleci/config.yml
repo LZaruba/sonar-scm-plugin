@@ -46,7 +46,7 @@ jobs:
       - run: mvn package -Dmaven.test.skip=true
 
       - store_artifacts:
-          path: target/sonar-scm-plugin-*-SNAPSHOT.jar
+          path: target/sonar-scm-plugin-*.jar
           destination: sonar-scm-plugin.jar
 
       - persist_to_workspace:
@@ -55,7 +55,7 @@ jobs:
           root: target
 
           paths:
-            - sonar-scm-plugin-*-SNAPSHOT.jar
+            - sonar-scm-plugin-*.jar
 
   publish-github-release:
     docker:
