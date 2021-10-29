@@ -1,4 +1,4 @@
-FROM maven:3.6-openjdk-8-slim AS MAVEN_TOOL_CHAIN
+FROM maven:3.6-openjdk-11-slim AS MAVEN_TOOL_CHAIN
 LABEL maintainer="opensource@klarna.com"
 
 WORKDIR /tmp

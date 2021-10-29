@@ -23,6 +23,11 @@ import cz.lzaruba.sonar.scm.model.Issue;
  */
 public interface IssueFilter {
 
+    /**
+     * Returns true if the given issue location is matching at least one of the diff hunks
+     *
+     * Prefix of 'test:' is striped from the issue's component path
+     */
     boolean isPresent(Issue issue, Diff diff);
 
 }
