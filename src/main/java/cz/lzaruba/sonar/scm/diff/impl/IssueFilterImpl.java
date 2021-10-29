@@ -19,14 +19,36 @@ import cz.lzaruba.sonar.scm.diff.IssueFilter;
 import cz.lzaruba.sonar.scm.diff.model.Diff;
 import cz.lzaruba.sonar.scm.model.Issue;
 
+import java.util.Objects;
+
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2021
  */
 public class IssueFilterImpl implements IssueFilter {
 
+    private static final String TEST_PREFIX = "test:";
+
     @Override
     public boolean isPresent(Issue issue, Diff diff) {
-        return true;
+        Objects.requireNonNull(issue, "Issue is required");
+        Objects.requireNonNull(diff, "Diff is required");
+
+        if (diff.getFiles() == null) {
+            return false;
+        }
+        return diff.getFiles().stream()
+                .filter(f -> f.getHunks() != null)
+                .filter(f -> isComponentMatch(issue.getComponent(), f.getToFile()))
+                .flatMap(f -> f.getHunks().stream())
+                .anyMatch(h -> h.getToLineStart() <= issue.getLine()
+                    && (h.getToLineStart() + h.getToNumLines()) >= issue.getLine());
+    }
+
+    private boolean isComponentMatch(String component, String toFile) {
+        if (!component.startsWith(TEST_PREFIX)) {
+            return false;
+        }
+        return component.substring(TEST_PREFIX.length()).equals(toFile);
     }
 
 }
