@@ -29,14 +29,6 @@ jobs:
             - deps1-{{ .Branch }}-{{ checksum "pom.xml" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-
-      - run: mvn dependency:go-offline
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: deps1-{{ .Branch }}-{{ checksum "pom.xml" }}
-
 #       run tests
       - run: mvn test
 #
@@ -45,9 +37,13 @@ jobs:
 #          command: bash <(curl -s https://codecov.io/bash)
       - run: mvn package -Dmaven.test.skip=true
 
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: deps1-{{ .Branch }}-{{ checksum "pom.xml" }}
+
       - store_artifacts:
-          path: target/sonar-scm-plugin-0.1.0.jar
-          destination: sonar-scm-plugin.jar
+          path: target
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
