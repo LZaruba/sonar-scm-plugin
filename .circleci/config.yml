@@ -51,7 +51,7 @@ jobs:
           root: target
 
           paths:
-            - sonar-scm-plugin-0.1.0.jar
+            - target
 
   publish-github-release:
     docker:
