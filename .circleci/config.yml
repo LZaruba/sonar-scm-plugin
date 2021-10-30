@@ -51,7 +51,7 @@ jobs:
           root: target
 
           paths:
-            - target
+            - .
 
   publish-github-release:
     docker:
