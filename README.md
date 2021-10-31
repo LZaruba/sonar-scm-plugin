@@ -20,8 +20,9 @@ $ mvn sonar:sonar -Dsonar.projectKey=[PROJECT_KEY] -Dsonar.host.url=[SONAR_URL] 
 | `sonar.analysis.scm` | github | Type of the SCM, valid values are `github`, `bitbucketServer` |
 | `sonar.analysis.username` | LZaruba | Username related to the access token for the SCM |
 
-1/ Properties related to the Maven SonarQube plugin, listed for reference only  
-## Development
+1/ Properties related to the Maven SonarQube plugin, listed for reference only
+
+## Development and Contributing
 
 ### Run Locally
 
@@ -59,7 +60,7 @@ $ docker run -p 9000:9000 -p 8000:8000 docker.io/lz/sonar-scm-plugin
 4. Wait for a bit once the analyzers are executed in SonarQube
 5. Debug...
 
-## Contributing
+### Guidelines
 
 * Follow the [Google code style guide](https://google.github.io/styleguide/javaguide.html).
 * Make sure that your change contain proper test coverage
